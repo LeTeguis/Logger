@@ -93,6 +93,8 @@ namespace nkentsuu {
 
 The usage of this `Log` class can be done as follows:
 
+[include](File:Exemples/AllExemple/src/mai.cpp)
+
 ```cpp
 #include <Logger/Log.h>
 
