@@ -60,7 +60,7 @@ Another example of usage is to include the `Log.h` file, which is defined as fol
 #include "Assert.h"
 
 namespace nkentsuu {
-    class NKENTSUU_API Log {
+    class Log {
         public:
 
             static Log& Instance() {
@@ -93,7 +93,6 @@ namespace nkentsuu {
 
 The usage of this `Log` class can be done as follows:
 
-[include](File:Exemples/AllExemple/src/mai.cpp)
 
 ```cpp
 #include <Logger/Log.h>
