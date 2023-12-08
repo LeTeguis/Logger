@@ -8,7 +8,7 @@
 #include "Assert.h"
 
 namespace nkentsuu {
-	class Log {
+	class NKENTSUU_API Log {
 		public:
 
 			static Log& Instance() {
