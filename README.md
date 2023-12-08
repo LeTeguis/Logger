@@ -1,6 +1,122 @@
-# ValueProperty
+# Logger Library
 
-ValueProperty is a cross-platform library that allows us to notify the system if the values of a data type have been modified for further processing. It is similar to the ValueProperty in JavaFx.
+The Logger Library is a logging library written in C++. It provides a simple and flexible interface for logging messages in your application.
+
+## Features
+
+- Support for different types of loggers (e.g., console, file, network, etc.).
+- Customization of log message formats.
+- Asynchronous logging support.
+- Ability to set default or instance-specific display options for loggers.
+- Conditional logging support (e.g., based on message severity level).
+
+## Usage
+
+To start using the Logger Library, follow these steps:
+
+1. Include the `Logger.h` header file in your project.
+2. Create an instance of the `Logger` class, specifying the logger name and optionally the message format.
+3. Use the methods provided by the `Logger` class to log messages.
+
+Example usage:
+
+```cpp
+#include "Logger.h"
+
+int main()
+{
+    nkentsuu::Logger logger("MyLogger", "[%T] %N: %M");
+
+    logger.Log(nkentsuu::LogLevel::Info, "This is an informational message");
+    logger.Log(nkentsuu::LogLevel::Warning, "This is a warning message");
+    logger.Log(nkentsuu::LogLevel::Error, "This is an error message");
+
+    return 0;
+}
+```
+The addition of the Log.h file with an example of encapsulating the logger and assertion simplifies their usage as follows:
+
+1. Logger encapsulation: The Log.h file defines a Log class that encapsulates the logger. This class provides a static Instance() method that returns a unique instance of Log. You can use this instance to obtain the logger using the GetLogger() method. For example, `Log::Instance().GetLogger()->ILog(__FILE__, __LINE__, __FUNCTION__)` allows you to access the logger and log messages.
+
+2. Assertion encapsulation: The Log.h file also defines a GetAssert() method in the Log class. This method returns an assertion instance that you can use to perform assertions in your code. For example, `Log::Instance().GetAssert()->IAssert(__FILE__, __LINE__, __FUNCTION__)` allows you to access the assertion and perform checks.
+
+By using this Log.h file as is, you can simply include the file in your project and use the LOG and ASSERT macros to access the logger and assertion respectively. For example, `LOG.Debug("Hello")` will log a debug message, and `ASSERT.True(condition, message)` will perform an assertion on the given condition.
+
+If desired, you can also customize this Log.h file by defining your own Log class with additional features or adapting the LOG and ASSERT macros to fit your specific needs.
+
+```cpp
+## Usage (Example 2)
+
+Another example of usage is to include the `Log.h` file, which is defined as follows:
+
+```cpp
+#ifndef __LOG_H_HEADER__
+#define __LOG_H_HEADER__
+
+#pragma once
+
+#include "Platform/Platform.h"
+#include "Logger.h"
+#include "Assert.h"
+
+namespace nkentsuu {
+    class NKENTSUU_API Log {
+        public:
+
+            static Log& Instance() {
+                static Log unitTest;
+                return unitTest;
+            }
+
+            std::shared_ptr<Logger> GetLogger() {
+                return Logger__;
+            }
+
+            std::shared_ptr<Assert> GetAssert() {
+                return Assert__;
+            }
+        private:
+            std::shared_ptr<Logger> Logger__;
+            std::shared_ptr<Assert> Assert__;
+            Log(){
+                Logger__ = std::make_shared<Logger>("Nkentsuu");
+                Assert__ = std::make_shared<Assert>(Logger__);
+            }
+    };
+
+    #define LOG             Log::Instance().GetLogger()->ILog(__FILE__, __LINE__, __FUNCTION__)
+    #define ASSERT          Log::Instance().GetAssert()->IAssert(__FILE__, __LINE__, __FUNCTION__)
+}
+
+#endif /* __LOG_H_HEADER__ */
+```
+
+The usage of this `Log` class can be done as follows:
+
+```cpp
+#include <Logger/Log.h>
+
+int main(int argc, char **argv){
+    //nkentsuu::LOG.SetName("Bob");
+
+    nkentsuu::LOG.Debug("Hello");
+    return 0;
+}
+```
+
+You can also create your own `Log.h` file by defining your own `Log` class according to your specific needs.
+
+Feel free to customize this example according to your requirements and adapt it to your project.
+
+## Contribution
+
+Contributions to the Logger Library are welcome! If you would like to make improvements, fix bugs, or add new features, please feel free to submit a pull request on GitHub.
+
+## License
+
+This project is licensed under the MIT License. Please see the [LICENSE](./LICENSE) file for more information.
+
+Feel free to customize this presentation based on the specific details of your project.
 
 ## Repository Usage
 
@@ -12,9 +128,9 @@ The current repository is structured in a very simple way and has basic elements
 
 The solution is structured as follows:
 
-    ValueProperty/
+    Logger/
     ├── .gitignore
-    ├── ValueProperty/
+    ├── Logger/
     │   ├── docs/
     │   ├── src/
     │   ├── premake5.lua
@@ -29,10 +145,6 @@ The solution is structured as follows:
     │   ├── gen.py
     │   ├── build.py
     │   └── ...
-    ├── utest/
-    │   ├── src/
-    │   ├── premake5.lua
-    │   └── README.md
     ├── nts.bat
     ├── nts.py
     ├── nts.sh
@@ -40,11 +152,10 @@ The solution is structured as follows:
     ├── premake5.lua
     └── README.md
 
-* ValueProperty: This is the root directory of all projects, tests, and examples.
-    - ValueProperty: This is the ValueProperty library.
+* Logger: This is the root directory of all projects, tests, and examples.
+    - Logger: This is the Logger library.
     - external: This is where external libraries and useful binaries for the proper functioning of the projects (third-party) will be stored.
     - tools: These are the basic scripts for installing libraries in a portable manner.
-    - utest: These are the unit and functional tests for each project.
     - nts.bat, nts.py, nts.sh: These are the basic scripts to access construction, build, run, and other scripts.
 
 ## Configuration

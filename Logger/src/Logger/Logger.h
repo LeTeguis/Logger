@@ -135,6 +135,30 @@ namespace nkentsuu
                 return *this;
             }
 
+
+            /**
+             * @brief Generate the logger message
+             *
+             * @tparam Args
+             * @param file
+             * @param ligne
+             * @param function
+             * @param format
+             * @param args
+             */
+            template<typename... Args>
+            void Log(LoggerType type, const char* format = "", Args&&... args) {
+                std::string formattedMessage = STRING_FORMATTER.Format(format, args...);
+                m_Header = formatOptionString(m_File.c_str(), m_Ligne, m_Function.c_str());
+                m_LogType = type;
+                if (m_Callback != nullptr) {
+                    m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
+                }
+                if (!m_StopDefaultWriting)
+                    write(m_LogType, m_Header, formattedMessage);
+            }
+
+
             /**
              * @brief Generate the logger message with the Info type of logger
              *
@@ -154,7 +178,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::INFO, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
 
             #ifdef NKENTSUU_DEBUG
@@ -177,7 +201,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::ASSERT, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
             #endif
 
@@ -200,7 +224,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::ERROR, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
 
             /**
@@ -222,7 +246,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::WARNING, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
 
             /**
@@ -244,7 +268,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::DEBUG, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
 
             /**
@@ -266,7 +290,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::TRACE, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
 
             /**
@@ -288,7 +312,7 @@ namespace nkentsuu
 					m_Callback({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
                 }
                 if (!m_StopDefaultWriting)
-                    write(LoggerType::CRITICAL, m_Header, formattedMessage);
+                    write(m_LogType, m_Header, formattedMessage);
             }
 
             /**
@@ -311,7 +335,6 @@ namespace nkentsuu
                 }
                 if (!m_StopDefaultWriting)
                     write({ m_name, m_LogType, m_File, m_Function, m_Ligne, m_Header, formattedMessage });
-                    //write(LoggerType::FATAL, m_Header, formattedMessage);
             }
 
             std::string GetHeader() { return m_Header; }
